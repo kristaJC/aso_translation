@@ -1,4 +1,8 @@
 from config import *
+import json
+import string
+import random
+
 
 def get_game_description(game):
     if game in GAME_DESCRIPTION_MAP:
@@ -8,8 +12,11 @@ def get_game_description(game):
     else:
         return
 
-def build_translation_prompt(game, #phrase, 
-                             char_limit, type_desc, target_language):
+def build_translation_prompt(game, 
+                             #phrase, 
+                             char_limit,
+                             type_desc, 
+                             target_language):
     game_description = get_game_description(game)
     
     return f"""
@@ -30,6 +37,7 @@ Return only the translated phrase, no explanation.
 """
 
 #
+"""
 def call_gpt_api(prompt):
     
     messages = [
@@ -48,20 +56,36 @@ def append_to_jsonl(output_path, prompt, phrase)
                 ]
             }
         }
-        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+        f.write(json.dumps(record, ensure_ascii=False) + "\n")"""
 
+#TODO: separate the batch files by language, then we union them back later after post processing.keep track of row number always so we can union by index
 
+def convert_df_to_jsonl(df, target_languages, output_path):
+    #row_identifier = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5))
 
-def translate(df, target_languages, output_path):
-
-    for idx, row in df.iterrows():
-        for lang in target_languages:
-            prompt = build_translation_prompt(
-                game=row['Game'],
-                #phrase=row['EN'],
-                char_limit=row['char_limit'],
-                type_desc=row['type_desc'],
-                target_language=lang
-            )
-            append_to_jsonl(output_path, prompt, phrase)
+    with open(output_path, 'w', encoding='utf-8') as f:
+        for idx, row in df.iterrows():
+            #row_identifier = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5))
+            for lang in target_languages:
+                #row_identifier = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(5))
+                prompt = build_translation_prompt(
+                    game=row['Game'],
+                    #phrase=row['EN'],
+                    char_limit=row['char_limit'],
+                    type_desc=row['type_desc'],
+                    target_language=lang
+                )
+                record = {
+                    "custom_id": f"{lang}_row_{idx}",
+                    "method":"POST",
+                    "url": "/v1/chat/completions", 
+                    "body": {"model": MODEL,
+                        "messages": [
+                            {"role": "system", "content": prompt},
+                            {"role": "user", "content": json.dumps(row['EN'])}
+                        ]
+                    }
+                }
+                f.write(json.dumps(record, ensure_ascii=False) + "\n")
+           
             
