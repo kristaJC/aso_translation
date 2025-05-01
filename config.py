@@ -2,7 +2,7 @@ INPUT_TABLE = 'ds.aso_may_2025_unioned'
 
 ##TARGET_LANGUAGES = ['Latin American Spanish','Brazilian Portuguese','Italian','Japanese','French','German']
 
-TARGET_LANGUAGES_EXT = ['Chinese', 'Taiwanese','Korean','Russian']
+#TARGET_LANGUAGES_EXT = ['Simplified Chinese', 'Taiwanese','Korean','Russian']
 
 #LANG_MAP = dict(zip(TARGET_LANGUAGES, ['es_LA','pt_BR','it_IT','ja_JP','fr_FR','de_DE']))
 #LANG_MAP_EXT = dict(zip(TARGET_LANGUAGES_EXT, ['zh_CN','zh_TW','ko_KR','ru_RU']))
@@ -11,10 +11,12 @@ GAME_DESCRIPTION_MAP = {'CJ':'A match-3 game that features themes of baking, and
 
 MODEL = 'gpt-4o'
 
-#GEMINI MODEL ....
 
-TARGET_LANGUAGES =  ['Latin American Spanish','Brazilian Portuguese','Italian','Japanese','French','German','Chinese', 'Korean','Russian']
-LANG_MAP = dict(zip(TARGET_LANGUAGES, ['es_LA','pt_BR','it_IT','ja_JP','fr_FR','de_DE','zh_CN','ko_KR','ru_RU']))
+ALL_TARGET_LANGUAGES =  ['Latin American Spanish','Brazilian Portuguese','Italian','Japanese','French','German','Simplified Chinese', 'Traditional Chinese','Korean','Russian']
+ALL_LANG_MAP = dict(zip(ALL_TARGET_LANGUAGES, ['es_LA','pt_BR','it_IT','ja_JP','fr_FR','de_DE','zh_CN','zh_TW','ko_KR','ru_RU']))
 
 #LANG_MAP = dict(zip(TARGET_LANGUAGES, ['es_LA','pt_BR','it_IT','ja_JP','fr_FR','de_DE']))
 #LANG_MAP_EXT = dict(zip(TARGET_LANGUAGES_EXT, ['zh_CN','zh_TW','ko_KR','ru_RU']))
+
+
+#LANG_PLATFORM_CHARLIMIT_MAP = {'ios':['es_LA','pt_BR','it_IT','ja_JP','fr_FR','de_DE','zh_CN','zh_TW','ko_KR','ru_RU'], }

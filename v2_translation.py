@@ -37,6 +37,8 @@ Avoid:
 - Translating idioms or jokes literally if they don’t work in the target language
 """
 
+
+### Todo - update Russian guidelines update traditional chinese guidelines
 lang_specific_guidelines = {
     'Latin American Spanish':""" - Use informal tú-form - Prioritize friendly, casual verbs like juega, descubre, gana""",
     'Brazilian Portuguese': """ - Use informal você-form - Make copy energetic and emotionally expressive — Divirta-se!""",
@@ -44,9 +46,19 @@ lang_specific_guidelines = {
     'Japanese': """ - Use casual-polite forms (e.g., ～しよう, ～が登場), - Match the upbeat, punchy tone of puzzle and gacha games """,
     'French':""" -Use informal tu-form -Make phrasing smooth, vivid, and naturally expressive """,
     'German': """ """,
-    'Chinese': """ - Keep it brief, casual, and direct - Highlight excitement and rewards with punchy terms like 限时, 赢奖励 """, 
+    'Simplified Chinese': """ - Keep it brief, casual, and direct - Highlight excitement and rewards with punchy terms like 限时, 赢奖励 """, 
+    'Traditional Chinese': """ - Use casual and lively language that fits mobile game audiences in Taiwan and Hong Kong
+    -Favor clear, short sentences with a playful or promotional tone
+    -Prioritize fluency and cultural appropriateness over literal phrasing
+    -Terms like 表情符號 (emoji), 獎勵 (rewards), and 限時 (limited-time) are common in game copy
+    -Avoid overly technical or overly simplified language — it should feel local and fun
+    """, 
     'Korean': """ - Favor casual or semi-formal style depending on context - Keep copy concise, lively, and visually engaging """,
-    'Russian': """ - Use less formal phrasing when appropriate (e.g., Собери награды!) - Focus on clear, engaging language with light personality"""
+    'Russian': """ -Always use the formal second-person plural (вы) 
+    -Do not capitalize вы — this is a neutral formal register, not overly honorific
+    -All verbs and adjectives must match this formal second-person form
+    -The tone should be polite but not stiff or bureaucratic
+    -Make phrasing natural and suitable for a general gaming audience"""
 }
 
 def get_language_specific_guidelines(target_language):
@@ -93,13 +105,19 @@ def convert_df_to_jsonl(df, target_languages, output_path):
     with open(output_path, 'w', encoding='utf-8') as f:
         for idx, row in df.iterrows():
             for lang in target_languages:
+                # add help for modifying char limit for some languages
+                char_limit=row['char_limit']
+                if (char_limit in [80,500] and lang in ['Simplified Chinese', 'Traditional Chinese','Korean','Japanese']):
+                    char_limit = int(char_limit/2)
                 prompt = build_translation_prompt(
                     game=row['Game'],
-                    char_limit=row['char_limit'],
+                    #char_limit=row['char_limit'],
+                    char_limit = char_limit,
                     type_desc=row['type_desc'],
                     target_language=lang
                 )
                 record = {
+                    # TODO, include group key and make sure to update inputs to always have this key
                     "custom_id": f"{lang}_row_{idx}",
                     "method":"POST",
                     "url": "/v1/chat/completions", 
